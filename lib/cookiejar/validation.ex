@@ -217,6 +217,8 @@ defmodule CookieJar.Validation do
           Keyword.put args, :path, value
         "secure" ->
           Keyword.put args, :secure, true
+        "max-age" -> args
+        "version" -> args
         "httponly" ->
           Keyword.put args, :http_only, true
         _ ->
