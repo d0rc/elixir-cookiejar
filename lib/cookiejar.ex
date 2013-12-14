@@ -145,25 +145,22 @@ defrecord CookieJar, domains: HashDict.new do
 end
 
 defimpl Enumerable, for: CookieJar do
-  def count(jar) do
-    Enum.reduce jar, 0, fn(_, acc) ->
-      acc + 1
-    end
-  end
+  def count(jar), do: { :error, __MODULE__ }
 
-  def member?(jar, value) do
-    Enum.any? jar, fn(cookie) ->
-      cookie == value
-    end
-  end
+  def member?(jar, value), do: { :error, __MODULE__ }
 
-  def reduce(jar, acc, fun) do
-    Enum.reduce Dict.values(jar.domains), acc, fn(paths, acc1) ->
-      Enum.reduce Dict.values(paths), acc1, fn(cookies, acc2) ->
-        Enum.reduce cookies, acc2, fn({ _, cookie }, acc3) ->
-          fun.(cookie, acc3)
+  def reduce(_, {:halt, acc}, _fun), do: {:halted, acc}
+  def reduce(jar, {:suspend, acc}, fun), do: {:suspened, acc, &reduce(jar, &1, fun)}
+  def reduce(jar, {:cont, acc}, fun) do
+    result = Enum.reduce Dict.values(jar.domains), acc, fn(paths, acc1) ->
+      result1 = Enum.reduce Dict.values(paths), acc1, fn(cookies, acc2) ->
+        result2 = Enum.reduce cookies, acc2, fn
+          ({ _, cookie }, acc3) ->
+            {_, fresult} = fun.(cookie, acc3)
+            fresult
         end
       end
     end
+    {:done, result}
   end
 end
