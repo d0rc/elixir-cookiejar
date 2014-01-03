@@ -15,6 +15,6 @@ defmodule Cookiejar.Mixfile do
   # Returns the list of dependencies in the format:
   # { :foobar, "~> 0.1", git: "https://github.com/elixir-lang/foobar.git" }
   defp deps do
-    [{ :continuum, github: "d0rc/continuum" }]
+    [{ :continuum, github: "meh/continuum" }]
   end
 end
