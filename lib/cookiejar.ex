@@ -72,7 +72,7 @@ defrecord CookieJar, domains: HashDict.new do
     end
   end
 
-  def get_cookies(request_uri, opts // [], jar) do
+  def get_cookies(request_uri, opts \\ [], jar) do
     uri = to_uri request_uri
     hosts = Validation.compute_search_domains uri
 
@@ -90,7 +90,7 @@ defrecord CookieJar, domains: HashDict.new do
     Enum.sort res, fn(x, y) -> String.length(x.path) >= String.length(y.path) end
   end
 
-  def get_cookie_header(request_uri, opts // [], jar) do
+  def get_cookie_header(request_uri, opts \\ [], jar) do
     cookies = jar.get_cookies request_uri, opts
     ver = Enum.partition cookies, fn(cookie) ->
       cookie.version == 0
@@ -116,7 +116,7 @@ defrecord CookieJar, domains: HashDict.new do
     end
   end
 
-  def expire_cookies(session // false, jar) do
+  def expire_cookies(session \\ false, jar) do
     domains = Enum.reduce jar.domains, jar.domains, fn({ domain, paths }, domains) ->
       paths = Enum.reduce paths, paths, fn({ path, cookies }, paths) ->
         cookies = Enum.reduce cookies, cookies, fn({ name, cookie }, cookies) ->

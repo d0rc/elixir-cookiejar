@@ -17,7 +17,7 @@ defrecord CookieJar.Cookie, [name: nil, value: nil, domain: nil, path: nil,
     end
   end
 
-  def expired?(time // DateTime.now, cookie) do
+  def expired?(time \\ DateTime.now, cookie) do
     expires_at = cookie.expires_at
     !nil?(expires_at) && time > expires_at
   end
@@ -82,7 +82,7 @@ defrecord CookieJar.Cookie, [name: nil, value: nil, domain: nil, path: nil,
     Validation.decode_value cookie.value
   end
 
-  def to_string(ver // 0, prefix // true, cookie) do
+  def to_string(ver \\ 0, prefix \\ true, cookie) do
     case ver do
       0 ->
         "#{cookie.name}=#{cookie.value}"

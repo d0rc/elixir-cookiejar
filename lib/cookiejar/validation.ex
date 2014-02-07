@@ -238,14 +238,14 @@ defmodule CookieJar.Validation do
   defp split_set_cookie2(set_cookie_value, args) do
     md = Regex.run(unquote(param2), set_cookie_value, return: :index)
 
-    if nil?(md) || elem(Enum.first(md), 0) != 0 do
+    if nil?(md) || elem(List.first(md), 0) != 0 do
       raise CookieJar.InvalidCookieError, messages: "Invalid Set-Cookie2 header '#{set_cookie_value}'"
     end
 
     matches = Regex.run(unquote(param2), set_cookie_value)
     key = Enum.at matches, 1
     value = Enum.at(matches, 2) || Enum.at(matches, 3)
-    index = elem(Enum.first(md), 1)
+    index = elem(List.first(md), 1)
     split_set_cookie2(String.slice(set_cookie_value, index, String.length(set_cookie_value) - index), [{key, value} | args])
   end
 
