@@ -31,11 +31,11 @@ defmodule CookieJar.Validation do
   quoted_text = "\\\"(?:#{qdtext}|#{quoted_pair})*\\\""
   value2 = "#{token}|#{quoted_text}"
 
-  base_hostname = Macro.escape %r/(?:#{domlabel}\.)(?:((?:(?:#{domlabel}\.)+(?:#{toplabel}\.?))|local))/
-  base_path = Macro.escape %r/\A((?:[^\/?#]*\/)*)/
-  ipaddr = Macro.escape %r/\A#{ipaddr}\Z/
-  param1 = Macro.escape %r/\A(#{token})(?:=#{value1})?\Z/
-  param2 = Macro.escape %r/(#{token})(?:=(#{value2}))?(?:\Z|;)/
+  base_hostname = Macro.escape ~r/(?:#{domlabel}\.)(?:((?:(?:#{domlabel}\.)+(?:#{toplabel}\.?))|local))/
+  base_path = Macro.escape ~r/\A((?:[^\/?#]*\/)*)/
+  ipaddr = Macro.escape ~r/\A#{ipaddr}\Z/
+  param1 = Macro.escape ~r/\A(#{token})(?:=#{value1})?\Z/
+  param2 = Macro.escape ~r/(#{token})(?:=(#{value2}))?(?:\Z|;)/
 
   use DateTime
 
@@ -68,7 +68,7 @@ defmodule CookieJar.Validation do
   def effective_host(host_or_uri) do
     hostname = String.downcase to_domain host_or_uri
 
-    if hostname =~ %r/.[\.:]./ || hostname == ".local" do
+    if hostname =~ ~r/.[\.:]./ || hostname == ".local" do
       hostname
     else
       hostname <> ".local"
@@ -153,7 +153,7 @@ defmodule CookieJar.Validation do
       errors = ["Path is not a prefix of the request uri path" | errors]
     end
 
-    unless cookie_host =~ unquote(ipaddr) || cookie_host =~ %r/.\../ || cookie_host == ".local" do
+    unless cookie_host =~ unquote(ipaddr) || cookie_host =~ ~r/.\../ || cookie_host == ".local" do
       errors = ["Domain format is illegal" | errors]
     end
 
@@ -175,10 +175,10 @@ defmodule CookieJar.Validation do
   end
 
   def value_to_string(value) when is_binary(value) do
-    matches = Regex.run(%r/\A"(.*)"\Z/, value)
+    matches = Regex.run(~r/\A"(.*)"\Z/, value)
     if matches do
       value = Enum.at matches, 1
-      Regex.replace(%r/\\(.)/, value, "\\1")
+      Regex.replace(~r/\\(.)/, value, "\\1")
     else
       value
     end
@@ -187,7 +187,7 @@ defmodule CookieJar.Validation do
   def value_to_string(x), do: x
 
   def decode_value(value) do
-    if value =~ %r/\A"(.*)"\Z/ do
+    if value =~ ~r/\A"(.*)"\Z/ do
       value_to_string value
     else
       URI.decode value
@@ -195,7 +195,7 @@ defmodule CookieJar.Validation do
   end
 
   def parse_set_cookie(set_cookie_value) do
-    [kv | params] = Regex.split(%r/;\s*/, set_cookie_value)
+    [kv | params] = Regex.split(~r/;\s*/, set_cookie_value)
     [_, name, value] = Regex.run(unquote(param1), kv)
 
     args = Enum.reduce params, [name: name, value: value], fn(param, args) ->
@@ -210,7 +210,7 @@ defmodule CookieJar.Validation do
 
       case key do
         "expires" ->
-          Keyword.put args, :expires_at, DateTime.timezone(%t"#{value}", "UTC")
+          Keyword.put args, :expires_at, DateTime.timezone(~t"#{value}", "UTC")
         "domain" ->
           Keyword.put args, :domain, value
         "path" ->
@@ -266,7 +266,7 @@ defmodule CookieJar.Validation do
         "version" ->
           Keyword.put args, :version, binary_to_integer(value)
         "port" ->
-          ports = Regex.split(%r/,\s*/, value)
+          ports = Regex.split(~r/,\s*/, value)
           Keyword.put args, :ports, Enum.map(ports, fn(port) -> binary_to_integer(port) end)
         _ ->
           raise CookieJar.InvalidCookieError, messages: "Unknown cookie parameter '#{key}'"

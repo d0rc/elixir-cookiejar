@@ -24,7 +24,7 @@ defrecord CookieJar, domains: HashDict.new do
   end
 
   def set_cookie(request_uri, cookie_header_values, jar) do
-    Enum.reduce Regex.split(%r/, (?=[\w]+=)/, cookie_header_values), jar, fn(cookie_header_value, acc) ->
+    Enum.reduce Regex.split(~r/, (?=[\w]+=)/, cookie_header_values), jar, fn(cookie_header_value, acc) ->
       acc.add_cookie(Cookie.from_set_cookie request_uri, cookie_header_value)
     end
   end
@@ -36,7 +36,7 @@ defrecord CookieJar, domains: HashDict.new do
   def set_cookies_from_headers(request_uri, http_headers, jar) do
     jar2 = Enum.reduce http_headers, CookieJar.new, fn({ key, value }, acc) ->
       cond do
-        key =~ %r/\ASet-Cookie\Z/i ->
+        key =~ ~r/\ASet-Cookie\Z/i ->
           value = if is_list(value), do: value, else: [value]
           Enum.reduce value, acc, fn(value, acc) ->
             try do
@@ -46,7 +46,7 @@ defrecord CookieJar, domains: HashDict.new do
                 acc
             end
           end
-        key =~ %r/\ASet-Cookie2\Z/i ->
+        key =~ ~r/\ASet-Cookie2\Z/i ->
           value = if is_list(value), do: value, else: [value]
           Enum.reduce value, acc, fn(value, acc) ->
             try do

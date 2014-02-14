@@ -12,7 +12,7 @@ defrecord CookieJar.Cookie, [name: nil, value: nil, domain: nil, path: nil,
         {{ _, _, _ }, { _, _, _ }} ->
           cookie.expiry
         _ ->
-          DateTime.plus(cookie.created_at, second: cookie.expiry)
+          DateTime.+ cookie.created_at, cookie.expiry
       end
     end
   end
