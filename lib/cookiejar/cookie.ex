@@ -18,8 +18,9 @@ defrecord CookieJar.Cookie, [name: nil, value: nil, domain: nil, path: nil,
   end
 
   def expired?(time \\ DateTime.now, cookie) do
-    expires_at = cookie.expires_at
-    !nil?(expires_at) && time > expires_at
+    false
+    #expires_at = cookie.expires_at
+    #!nil?(expires_at) && time > expires_at
   end
 
   def session?(cookie) do

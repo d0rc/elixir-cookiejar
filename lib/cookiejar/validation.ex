@@ -210,7 +210,7 @@ defmodule CookieJar.Validation do
 
       case key do
         "expires" ->
-          Keyword.put args, :expires_at, DateTime.timezone(~t"#{value}", "UTC")
+          Keyword.put args, :expires_at, value #DateTime.timezone(~t"#{value}", "UTC")
         "domain" ->
           Keyword.put args, :domain, value
         "path" ->
