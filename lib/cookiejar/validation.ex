@@ -1,3 +1,5 @@
+alias Continuum.DateTime, as: DateTime
+
 defexception CookieJar.InvalidCookieError, [messages: "Unknown"] do
   def message(exception) do
     if is_list(exception.messages) do
@@ -37,7 +39,7 @@ defmodule CookieJar.Validation do
   param1 = Macro.escape ~r/\A(#{token})(?:=#{value1})?\Z/
   param2 = Macro.escape ~r/(#{token})(?:=(#{value2}))?(?:\Z|;)/
 
-  use DateTime
+  use Continuum.DateTime
 
   def to_uri(uri = %URI{path: path}) do
     %URI{uri | path: (path || "/")}
@@ -214,7 +216,7 @@ defmodule CookieJar.Validation do
 
       case key do
         "expires" ->
-          Keyword.put args, :expires_at, DateTime.timezone(~t"#{value}", "UTC")
+          Keyword.put args, :expires_at, DateTime.now # DateTime.timezone(~t"#{value}", "UTC")
         "domain" ->
           Keyword.put args, :domain, value
         "path" ->

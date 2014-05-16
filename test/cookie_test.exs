@@ -1,3 +1,5 @@
+alias Continuum.DateTime, as: DateTime
+
 defmodule CookieTest do
   use ExUnit.Case
 

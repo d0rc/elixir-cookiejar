@@ -1,3 +1,5 @@
+alias Continuum.DateTime, as: DateTime
+
 defrecord CookieJar.Cookie, [name: nil, value: nil, domain: nil, path: nil,
   secure: false, http_only: false, version: nil, comment: nil, comment_url: nil,
   discard: nil, ports: nil, created_at: nil, expiry: nil] do
