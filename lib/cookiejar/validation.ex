@@ -39,15 +39,19 @@ defmodule CookieJar.Validation do
 
   use DateTime
 
-  def to_uri(uri) when is_record(uri, URI.Info) do
-    uri.path(uri.path || "/")
+  def to_uri(uri = %URI{path: path}) do
+    %URI{uri | path: (path || "/")}
   end
 
   def to_uri(request_uri) do
     to_uri URI.parse request_uri
   end
 
-  def to_path(uri) when is_record(uri, URI.Info) or is_record(uri, CookieJar.Cookie) do
+  def to_path(uri = %URI{path: path}) do
+    path
+  end
+
+  def to_path(uri) when is_record(uri, CookieJar.Cookie) do
     uri.path
   end
 
@@ -55,8 +59,8 @@ defmodule CookieJar.Validation do
     path
   end
 
-  def to_domain(uri) when is_record(uri, URI.Info) do
-    uri.host
+  def to_domain(%URI{host: host}) do
+    host
   end
 
   def to_domain(cookie) when is_record(cookie, CookieJar.Cookie) do

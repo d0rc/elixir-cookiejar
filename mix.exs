@@ -4,7 +4,6 @@ defmodule Cookiejar.Mixfile do
   def project do
     [ app: :cookiejar,
       version: "0.0.1",
-      build_per_environment: false,
       deps: deps ]
   end
 
